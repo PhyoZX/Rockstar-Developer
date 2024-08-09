@@ -1,8 +1,5 @@
 import { useState, createContext, useContext, useMemo } from "react";
 
-import App from "./App";
-import AppDrawer from "./components/AppDrawer";
-
 import {
   CssBaseline,
   Snackbar,
@@ -11,11 +8,56 @@ import {
 } from "@mui/material";
 import { deepPurple, grey } from "@mui/material/colors";
 
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import Template from "./Template";
+
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Likes from "./pages/Likes";
+import Profile from "./pages/Profile";
+import Comments from "./pages/Comments";
+
 const AppContext = createContext();
 
 export function useApp() {
   return useContext(AppContext);
 }
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Template />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/profile/:id",
+        element: <Profile />,
+      },
+      {
+        path: "/likes/:id",
+        element: <Likes />,
+      },
+      {
+        path: "/comments/:id",
+        element: <Comments />,
+      },
+    ],
+  },
+]);
+
 export default function ThemedApp() {
   const [showForm, setShowForm] = useState(false);
   const [mode, setMode] = useState("dark");
@@ -52,18 +94,7 @@ export default function ThemedApp() {
           setAuth,
         }}
       >
-        <App />
-        <AppDrawer />
-        <Snackbar
-          anchorOrigin={{
-            horizontal: "center",
-            vertical: "bottom",
-          }}
-          open={Boolean(globalMsg)}
-          autoHideDuration={6000}
-          onCLose={() => setGlobalMsg(null)}
-          message={globalMsg}
-        />
+        <RouterProvider router={router} />
         <CssBaseline />
       </AppContext.Provider>
     </ThemeProvider>
